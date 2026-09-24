@@ -22,11 +22,12 @@ export class UserService {
       throw err;
     }
 
-    const now = new Date();
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
 
     const [upcomingCount, pastCount, totalInvites, totalInviteClicks] = await Promise.all([
-      RSVP.countDocuments({ userId: userObjectId, eventDate: { $gte: now } }),
-      RSVP.countDocuments({ userId: userObjectId, eventDate: { $lt: now } }),
+      RSVP.countDocuments({ userId: userObjectId, eventDate: { $gte: startOfToday } }),
+      RSVP.countDocuments({ userId: userObjectId, eventDate: { $lt: startOfToday } }),
       Invite.countDocuments({ creatorUserId: userObjectId }),
       Invite.aggregate([
         { $match: { creatorUserId: userObjectId } },

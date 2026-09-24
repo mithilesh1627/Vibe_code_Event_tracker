@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { User } from '../types/auth.types.js';
 import { authService, LoginPayload, RegisterPayload } from '../services/auth.service.js';
 
@@ -19,6 +20,7 @@ const TOKEN_KEY = 'gatherpulse_token';
 const USER_KEY = 'gatherpulse_user';
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem(USER_KEY);
@@ -66,6 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem(USER_KEY, JSON.stringify(response.user));
     setToken(response.token);
     setUser(response.user);
+    queryClient.clear();
   };
 
   const register = async (payload: RegisterPayload) => {
@@ -74,6 +77,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem(USER_KEY, JSON.stringify(response.user));
     setToken(response.token);
     setUser(response.user);
+    queryClient.clear();
   };
 
   const logout = () => {
@@ -81,6 +85,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem(USER_KEY);
     setToken(null);
     setUser(null);
+    queryClient.clear();
   };
 
   return (

@@ -77,7 +77,8 @@ export class RSVPService {
     const userObjectId = new Types.ObjectId(userId);
     const rsvps = await RSVP.find({ userId: userObjectId }).sort({ eventDate: 1 });
 
-    const now = new Date();
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
 
     // Map through RSVPs and attach user's invite codes and referral stats
     const enriched = await Promise.all(
@@ -104,8 +105,8 @@ export class RSVPService {
       })
     );
 
-    const upcoming = enriched.filter((r) => new Date(r.eventDate) >= now);
-    const past = enriched.filter((r) => new Date(r.eventDate) < now);
+    const upcoming = enriched.filter((r) => new Date(r.eventDate) >= startOfToday);
+    const past = enriched.filter((r) => new Date(r.eventDate) < startOfToday);
 
     return {
       upcoming,

@@ -23,7 +23,9 @@ export const useCreateRSVP = () => {
       // Invalidate relevant queries to keep frontend state synchronous
       queryClient.invalidateQueries({ queryKey: ['my-rsvps'] });
       queryClient.invalidateQueries({ queryKey: ['events'] });
-      queryClient.invalidateQueries({ queryKey: ['event', variables.eventId] });
+      queryClient.invalidateQueries({ queryKey: ['event'] });
+      queryClient.invalidateQueries({ queryKey: ['invite'] });
+      queryClient.invalidateQueries({ queryKey: ['friends-attending'] });
       queryClient.invalidateQueries({ queryKey: ['user-profile'] });
     },
   });
@@ -37,7 +39,9 @@ export const useCancelRSVP = () => {
     onSuccess: (_, eventId) => {
       queryClient.invalidateQueries({ queryKey: ['my-rsvps'] });
       queryClient.invalidateQueries({ queryKey: ['events'] });
-      queryClient.invalidateQueries({ queryKey: ['event', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['event'] });
+      queryClient.invalidateQueries({ queryKey: ['invite'] });
+      queryClient.invalidateQueries({ queryKey: ['friends-attending'] });
       queryClient.invalidateQueries({ queryKey: ['user-profile'] });
     },
   });
