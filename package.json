@@ -1,0 +1,26 @@
+{
+  "name": "event-tracker",
+  "version": "1.0.0",
+  "description": "Intelligent Event Discovery & RSVP Platform with Friend Invite System",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "build": "npm run build --prefix server && npm run build --prefix client",
+    "start": "node server/dist/server.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "event-discovery",
+    "rsvp",
+    "ticketmaster",
+    "mern",
+    "typescript",
+    "react",
+    "friend-invites"
+  ],
+  "author": "",
+  "license": "ISC"
+}
