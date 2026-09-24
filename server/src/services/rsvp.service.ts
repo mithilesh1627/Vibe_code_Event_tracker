@@ -9,6 +9,7 @@ export interface CreateRSVPDTO {
   eventDate: string | Date;
   venue: string;
   eventImage?: string;
+  referredByInviteCode?: string;
 }
 
 export class RSVPService {
@@ -37,6 +38,7 @@ export class RSVPService {
       eventDate: new Date(dto.eventDate),
       venue: dto.venue,
       eventImage: dto.eventImage || '',
+      referredByInviteCode: dto.referredByInviteCode || '',
       createdAt: new Date(),
     });
 
@@ -77,11 +79,15 @@ export class RSVPService {
 
     const now = new Date();
 
-    // Map through RSVPs and attach user's invite codes
+    // Map through RSVPs and attach user's invite codes and referral stats
     const enriched = await Promise.all(
       rsvps.map(async (item) => {
         const invite = await InviteService.getOrCreateInvite(userId, item.eventId);
         const friendsCount = await InviteService.getFriendsAttendingCount(item.eventId);
+        const referredFriendsCount = await RSVP.countDocuments({
+          referredByInviteCode: invite.inviteCode,
+        });
+
         return {
           id: item._id.toString(),
           eventId: item.eventId,
@@ -91,6 +97,8 @@ export class RSVPService {
           eventImage: item.eventImage,
           createdAt: item.createdAt,
           inviteCode: invite.inviteCode,
+          inviteClicks: invite.clicks,
+          referredFriendsCount,
           friendsAttendingCount: friendsCount,
         };
       })

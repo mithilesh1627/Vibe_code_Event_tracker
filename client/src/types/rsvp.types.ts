@@ -7,6 +7,8 @@ export interface RSVPItem {
   eventImage?: string;
   createdAt: string;
   inviteCode: string;
+  inviteClicks?: number;
+  referredFriendsCount?: number;
   friendsAttendingCount: number;
 }
 

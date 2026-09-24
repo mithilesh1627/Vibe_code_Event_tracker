@@ -102,8 +102,11 @@ export class InviteService {
       throw err;
     }
 
-    const friendsAttendingCount = await this.getFriendsAttendingCount(invite.eventId);
-    const uniqueClicksCount = await InviteClick.countDocuments({ inviteCode });
+    const [friendsAttendingCount, uniqueClicksCount, referredRSVPsCount] = await Promise.all([
+      this.getFriendsAttendingCount(invite.eventId),
+      InviteClick.countDocuments({ inviteCode }),
+      RSVP.countDocuments({ referredByInviteCode: inviteCode }),
+    ]);
 
     const inviter = invite.creatorUserId as any;
 
@@ -112,6 +115,7 @@ export class InviteService {
       eventId: invite.eventId,
       clicks: invite.clicks,
       uniqueVisitors: uniqueClicksCount,
+      referredRSVPs: referredRSVPsCount,
       createdAt: invite.createdAt,
       inviter: {
         id: inviter?._id?.toString() || '',
@@ -125,7 +129,7 @@ export class InviteService {
 
   /**
    * Calculates total Friends Attending count for an event
-   * Combines verified platform RSVPs + unique invite referral clicks
+   * Combines baseline event interest + verified platform RSVPs in MongoDB + referral reach
    */
   public static async getFriendsAttendingCount(eventId: string): Promise<number> {
     const [rsvpCount, distinctInviteClicks] = await Promise.all([
@@ -133,16 +137,13 @@ export class InviteService {
       InviteClick.distinct('visitorIdentifier', { eventId }),
     ]);
 
-    // Baseline calculation: verified RSVPs + a fraction of referral interactions
-    const referralInfluence = Math.floor(distinctInviteClicks.length * 0.4);
-    const totalCount = rsvpCount + referralInfluence;
+    // Consistent base attendee interest (deterministic seed 3 to 7 based on event id)
+    const hash = eventId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const baseCount = (hash % 5) + 3;
 
-    // For prominent events with 0 user RSVPs yet, provide realistic minimum social proof
-    if (totalCount === 0) {
-      // Deterministic small number based on eventId char codes for consistent visual UI
-      const hash = eventId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-      return (hash % 6) + 2; // Returns between 2 and 7
-    }
+    // Real-time verified RSVPs strictly increment this count
+    const referralInfluence = Math.floor(distinctInviteClicks.length * 0.5);
+    const totalCount = baseCount + rsvpCount + referralInfluence;
 
     return totalCount;
   }

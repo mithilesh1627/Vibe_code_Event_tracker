@@ -80,6 +80,8 @@ export const InviteLandingPage: React.FC = () => {
           eventDate: event.date,
           venue: `${event.venue}, ${event.city}`,
           eventImage: event.imageUrl,
+          referredByInviteCode: inviteCode,
+          inviteCode: inviteCode,
         },
       });
 
@@ -95,6 +97,8 @@ export const InviteLandingPage: React.FC = () => {
     }
   };
 
+  const isSelfInvite = isAuthenticated && user && user.id === inviter.id;
+
   return (
     <div className="max-w-3xl mx-auto py-8 sm:py-12">
       {/* Personalized Inviter Banner */}
@@ -109,12 +113,16 @@ export const InviteLandingPage: React.FC = () => {
             className="w-6 h-6 rounded-full object-cover border border-indigo-200"
           />
           <span className="text-xs sm:text-sm font-semibold text-indigo-900">
-            <strong>{inviter.name}</strong> invited you to join them!
+            {isSelfInvite ? (
+              <span><strong>You</strong> created this invite link!</span>
+            ) : (
+              <span><strong>{inviter.name}</strong> invited you to join them!</span>
+            )}
           </span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          You've been invited to attend
+          {isSelfInvite ? "Your Shareable Event Invite" : "You've been invited to attend"}
         </h1>
       </div>
 
@@ -143,9 +151,17 @@ export const InviteLandingPage: React.FC = () => {
               <span>🎉 {friendsAttendingCount} friends attending</span>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/10 text-slate-300 text-xs font-medium">
-              <Eye className="w-3.5 h-3.5 text-indigo-400" />
-              <span>{clicks} link views</span>
+            <div className="flex items-center gap-2">
+              {typeof invite.referredRSVPs === 'number' && invite.referredRSVPs > 0 && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-900/80 backdrop-blur-md border border-emerald-500/20 text-emerald-200 text-xs font-medium">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{invite.referredRSVPs} joined via link</span>
+                </div>
+              )}
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/10 text-slate-300 text-xs font-medium">
+                <Eye className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{clicks} link views</span>
+              </div>
             </div>
           </div>
         </div>
@@ -180,7 +196,38 @@ export const InviteLandingPage: React.FC = () => {
 
           {/* CTA Box */}
           <div className="pt-6 border-t border-slate-100 space-y-4">
-            {rsvpCompleted ? (
+            {isSelfInvite ? (
+              <div className="p-5 rounded-2xl bg-indigo-50 border border-indigo-200/80 text-center space-y-3">
+                <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-indigo-950">
+                    This is your personal invite link!
+                  </h3>
+                  <p className="text-xs text-indigo-700 mt-1 max-w-sm mx-auto">
+                    Share this URL with friends. When they RSVP through it, they will be counted towards your group.
+                  </p>
+                </div>
+                <div className="flex items-center justify-center gap-3 pt-1">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => {
+                      navigator.clipboard.writeText(window.location.href);
+                      success('Link copied to clipboard!');
+                    }}
+                  >
+                    Copy Invite Link
+                  </Button>
+                  <Link to="/my-events">
+                    <Button variant="outline" size="sm">
+                      View My RSVPs
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ) : rsvpCompleted ? (
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-2">
                 <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                   <CheckCircle className="w-6 h-6" />

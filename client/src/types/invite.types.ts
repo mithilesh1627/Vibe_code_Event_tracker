@@ -5,6 +5,7 @@ export interface InviteDetails {
   eventId: string;
   clicks: number;
   uniqueVisitors: number;
+  referredRSVPs?: number;
   createdAt: string;
   inviter: {
     id: string;

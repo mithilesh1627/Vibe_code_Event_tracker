@@ -6,6 +6,8 @@ export interface CreateRSVPPayload {
   eventDate?: string;
   venue?: string;
   eventImage?: string;
+  referredByInviteCode?: string;
+  inviteCode?: string;
 }
 
 export const rsvpService = {

@@ -186,6 +186,15 @@ export const MyEventsPage: React.FC = () => {
                       <Users className="w-3.5 h-3.5" />
                       {rsvp.friendsAttendingCount} friends attending
                     </span>
+
+                    {typeof rsvp.inviteClicks === 'number' && (
+                      <span className="text-xs font-medium text-slate-500 flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded-md">
+                        <span>{rsvp.inviteClicks} clicks</span>
+                        {Boolean(rsvp.referredFriendsCount) && (
+                          <span className="text-emerald-600 font-semibold">• {rsvp.referredFriendsCount} joined</span>
+                        )}
+                      </span>
+                    )}
                   </div>
 
                   <Link

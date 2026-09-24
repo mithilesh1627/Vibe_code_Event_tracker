@@ -7,7 +7,7 @@ export class RSVPController {
     try {
       const { eventId } = req.params;
       const userId = (req as any).user.userId;
-      const { eventTitle, eventDate, venue, eventImage } = req.body;
+      const { eventTitle, eventDate, venue, eventImage, inviteCode, referredByInviteCode } = req.body;
 
       // If details not fully supplied in body, fetch from Ticketmaster service
       let title = eventTitle;
@@ -40,6 +40,7 @@ export class RSVPController {
         eventDate: date,
         venue: venueName || 'Venue to be announced',
         eventImage: image,
+        referredByInviteCode: referredByInviteCode || inviteCode || '',
       });
 
       res.status(201).json({

@@ -7,6 +7,7 @@ export interface IRSVP extends Document {
   eventDate: Date;
   venue: string;
   eventImage?: string;
+  referredByInviteCode?: string;
   createdAt: Date;
 }
 
@@ -41,6 +42,11 @@ const RSVPSchema = new Schema<IRSVP>(
     eventImage: {
       type: String,
       default: '',
+    },
+    referredByInviteCode: {
+      type: String,
+      default: '',
+      index: true,
     },
     createdAt: {
       type: Date,
