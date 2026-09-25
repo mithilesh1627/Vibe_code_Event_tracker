@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   CheckCircle,
   ShieldCheck,
+  Ticket,
 } from 'lucide-react';
 import { useEventDetails } from '../hooks/useEvents.js';
 import { useCreateRSVP, useCancelRSVP } from '../hooks/useRSVP.js';
@@ -19,6 +20,8 @@ import { formatDate, formatTime } from '../utils/date.utils.js';
 import { Button } from '../components/common/Button.js';
 import { InviteModal } from '../components/invite/InviteModal.js';
 import { inviteService } from '../services/invite.service.js';
+import { AddToCalendarDropdown } from '../components/events/AddToCalendarDropdown.js';
+import { DigitalTicketModal } from '../components/events/DigitalTicketModal.js';
 
 export const EventDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +31,7 @@ export const EventDetailPage: React.FC = () => {
 
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [inviteCode, setInviteCode] = useState('');
+  const [ticketModalOpen, setTicketModalOpen] = useState(false);
 
   const { data: event, isLoading, error: queryError } = useEventDetails(id);
   const createRSVPMutation = useCreateRSVP();
@@ -275,9 +279,21 @@ export const EventDetailPage: React.FC = () => {
                       Invite Friends
                     </Button>
                     <Button
+                      variant="outline"
+                      size="md"
+                      className="w-full border-indigo-200 text-indigo-700 bg-indigo-50/70 hover:bg-indigo-100"
+                      leftIcon={<Ticket className="w-4 h-4 text-indigo-600" />}
+                      onClick={() => setTicketModalOpen(true)}
+                    >
+                      View Digital Ticket Pass
+                    </Button>
+                    <div className="w-full flex justify-center pt-1">
+                      <AddToCalendarDropdown event={event} variant="secondary" />
+                    </div>
+                    <Button
                       variant="danger"
                       size="sm"
-                      className="w-full"
+                      className="w-full mt-1"
                       isLoading={cancelRSVPMutation.isPending}
                       onClick={handleCancelRSVP}
                     >
@@ -295,15 +311,18 @@ export const EventDetailPage: React.FC = () => {
                     >
                       RSVP / Attend Event
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="md"
-                      className="w-full"
-                      leftIcon={<Share2 className="w-4 h-4" />}
-                      onClick={handleOpenInvite}
-                    >
-                      Share with Friends
-                    </Button>
+                    <div className="flex items-center gap-2 w-full">
+                      <Button
+                        variant="outline"
+                        size="md"
+                        className="flex-1"
+                        leftIcon={<Share2 className="w-4 h-4" />}
+                        onClick={handleOpenInvite}
+                      >
+                        Share
+                      </Button>
+                      <AddToCalendarDropdown event={event} variant="secondary" />
+                    </div>
                   </>
                 )}
               </div>
@@ -337,6 +356,13 @@ export const EventDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Digital QR Ticket Modal */}
+      <DigitalTicketModal
+        isOpen={ticketModalOpen}
+        onClose={() => setTicketModalOpen(false)}
+        event={event}
+      />
 
       {/* Share / Invite Modal */}
       <InviteModal

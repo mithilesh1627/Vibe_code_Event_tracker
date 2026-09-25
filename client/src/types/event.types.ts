@@ -18,6 +18,8 @@ export interface EventItem {
   status: 'active' | 'cancelled' | 'postponed';
   friendsAttendingCount: number;
   isRSVPed?: boolean;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface EventsResponse {

@@ -60,6 +60,8 @@ export class TicketmasterService {
       maxPrice: priceRange?.max,
       currency: priceRange?.currency || 'USD',
       status: raw.dates?.status?.code === 'cancelled' ? 'cancelled' : 'active',
+      latitude: venueObj?.location?.latitude ? parseFloat(venueObj.location.latitude) : undefined,
+      longitude: venueObj?.location?.longitude ? parseFloat(venueObj.location.longitude) : undefined,
     };
   }
 

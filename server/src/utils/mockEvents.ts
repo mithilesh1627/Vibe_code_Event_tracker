@@ -17,6 +17,8 @@ export interface NormalizedEvent {
   currency?: string;
   status: 'active' | 'cancelled' | 'postponed';
   friendsAttendingCount?: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 // Helper to generate dynamic dates relative to today
@@ -45,6 +47,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 160,
     currency: 'USD',
     status: 'active',
+    latitude: 40.7600,
+    longitude: -73.9799,
   },
   {
     id: 'mock-evt-102',
@@ -64,6 +68,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 420,
     currency: 'USD',
     status: 'active',
+    latitude: 37.7680,
+    longitude: -122.3877,
   },
   {
     id: 'mock-evt-103',
@@ -83,6 +89,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 240,
     currency: 'USD',
     status: 'active',
+    latitude: 40.7624,
+    longitude: -73.9852,
   },
   {
     id: 'mock-evt-104',
@@ -102,6 +110,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 110,
     currency: 'USD',
     status: 'active',
+    latitude: 30.2694,
+    longitude: -97.7420,
   },
   {
     id: 'mock-evt-105',
@@ -121,6 +131,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 350,
     currency: 'USD',
     status: 'active',
+    latitude: 41.8623,
+    longitude: -87.6167,
   },
   {
     id: 'mock-evt-106',
@@ -140,6 +152,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 299,
     currency: 'USD',
     status: 'active',
+    latitude: 47.6117,
+    longitude: -122.3328,
   },
   {
     id: 'mock-evt-107',
@@ -159,6 +173,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 85,
     currency: 'GBP',
     status: 'active',
+    latitude: 51.5030,
+    longitude: 0.0032,
   },
   {
     id: 'mock-evt-108',
@@ -178,6 +194,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 195,
     currency: 'USD',
     status: 'active',
+    latitude: 40.7808,
+    longitude: -73.9810,
   },
   {
     id: 'mock-evt-109',
@@ -197,6 +215,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 320,
     currency: 'USD',
     status: 'active',
+    latitude: 34.0553,
+    longitude: -118.2458,
   },
   {
     id: 'mock-evt-110',
@@ -216,6 +236,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 65,
     currency: 'USD',
     status: 'active',
+    latitude: 37.7857,
+    longitude: -122.4011,
   },
   {
     id: 'mock-evt-111',
@@ -235,6 +257,8 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 650,
     currency: 'USD',
     status: 'active',
+    latitude: 30.1346,
+    longitude: -97.6411,
   },
   {
     id: 'mock-evt-112',
@@ -254,5 +278,7 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     maxPrice: 280,
     currency: 'USD',
     status: 'active',
+    latitude: 40.7505,
+    longitude: -73.9934,
   }
 ];

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Users, Share2, Trash2, BookmarkCheck, ArrowRight } from 'lucide-react';
+import { Calendar, MapPin, Users, Share2, Trash2, BookmarkCheck, ArrowRight, Ticket } from 'lucide-react';
 import { useMyRSVPs, useCancelRSVP } from '../hooks/useRSVP.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useToast } from '../context/ToastContext.js';
@@ -9,6 +9,8 @@ import { Button } from '../components/common/Button.js';
 import { Badge } from '../components/common/Badge.js';
 import { EmptyState } from '../components/common/EmptyState.js';
 import { InviteModal } from '../components/invite/InviteModal.js';
+import { AddToCalendarDropdown } from '../components/events/AddToCalendarDropdown.js';
+import { DigitalTicketModal } from '../components/events/DigitalTicketModal.js';
 import { RSVPItem } from '../types/rsvp.types.js';
 import { EventItem } from '../types/event.types.js';
 
@@ -21,6 +23,8 @@ export const MyEventsPage: React.FC = () => {
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const [currentInviteCode, setCurrentInviteCode] = useState('');
+  const [ticketModalOpen, setTicketModalOpen] = useState(false);
+  const [ticketEvent, setTicketEvent] = useState<EventItem | null>(null);
 
   const { data, isLoading } = useMyRSVPs();
   const cancelRSVPMutation = useCancelRSVP();
@@ -73,6 +77,26 @@ export const MyEventsPage: React.FC = () => {
     setSelectedEvent(syntheticEvent);
     setCurrentInviteCode(rsvp.inviteCode);
     setInviteModalOpen(true);
+  };
+
+  const handleOpenTicket = (rsvp: RSVPItem) => {
+    const syntheticEvent: EventItem = {
+      id: rsvp.eventId,
+      title: rsvp.eventTitle,
+      description: 'Confirmed RSVP Attendance on GatherPulse.',
+      date: typeof rsvp.eventDate === 'string' ? rsvp.eventDate.split('T')[0] : '',
+      time: '19:00',
+      venue: rsvp.venue,
+      address: '',
+      city: '',
+      category: 'Live Event',
+      imageUrl: rsvp.eventImage || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80',
+      ticketUrl: '',
+      status: 'active',
+      friendsAttendingCount: rsvp.friendsAttendingCount,
+    };
+    setTicketEvent(syntheticEvent);
+    setTicketModalOpen(true);
   };
 
   const upcoming = data?.upcoming || [];
@@ -218,14 +242,43 @@ export const MyEventsPage: React.FC = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0 justify-end pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto shrink-0 justify-end pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={<Ticket className="w-3.5 h-3.5 text-indigo-600" />}
+                  onClick={() => handleOpenTicket(rsvp)}
+                  title="View Digital Admission Pass"
+                >
+                  Pass
+                </Button>
+
+                <AddToCalendarDropdown
+                  event={{
+                    id: rsvp.eventId,
+                    title: rsvp.eventTitle,
+                    description: 'Confirmed RSVP attendance on GatherPulse',
+                    date: typeof rsvp.eventDate === 'string' ? rsvp.eventDate.split('T')[0] : '',
+                    time: '19:00',
+                    venue: rsvp.venue,
+                    address: '',
+                    city: '',
+                    category: 'Live Event',
+                    imageUrl: rsvp.eventImage || '',
+                    ticketUrl: '',
+                    status: 'active',
+                    friendsAttendingCount: rsvp.friendsAttendingCount,
+                  }}
+                  variant="compact"
+                />
+
                 <Button
                   variant="outline"
                   size="sm"
                   leftIcon={<Share2 className="w-3.5 h-3.5" />}
                   onClick={() => handleShare(rsvp)}
                 >
-                  Invite Friends
+                  Invite
                 </Button>
 
                 {activeTab === 'upcoming' && (
@@ -246,6 +299,15 @@ export const MyEventsPage: React.FC = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Digital QR Ticket Modal */}
+      {ticketEvent && (
+        <DigitalTicketModal
+          isOpen={ticketModalOpen}
+          onClose={() => setTicketModalOpen(false)}
+          event={ticketEvent}
+        />
       )}
 
       {/* Share / Invite Friends Modal */}

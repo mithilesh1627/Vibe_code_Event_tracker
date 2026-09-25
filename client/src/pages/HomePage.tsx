@@ -12,10 +12,16 @@ import { useToast } from '../context/ToastContext.js';
 import { EventItem } from '../types/event.types.js';
 import { inviteService } from '../services/invite.service.js';
 
+import { LayoutGrid, MapPin } from 'lucide-react';
+import { EventMapView } from '../components/map/EventMapView.js';
+
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { success, error } = useToast();
+
+  // View mode switcher: 'grid' | 'map'
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
 
   // Search & filter states
   const [keyword, setKeyword] = useState('');
@@ -130,6 +136,36 @@ export const HomePage: React.FC = () => {
               Curated performances, athletic matches, and cultural festivals.
             </p>
           </div>
+
+          {/* View Mode Switcher */}
+          <div className="inline-flex p-1 bg-slate-100 rounded-2xl border border-slate-200/80 shadow-inner self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                viewMode === 'grid'
+                  ? 'bg-white text-indigo-600 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Grid View</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setViewMode('map')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                viewMode === 'map'
+                  ? 'bg-white text-indigo-600 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              <span>Map View</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
+            </button>
+          </div>
         </div>
 
         <EventFilters
@@ -140,15 +176,24 @@ export const HomePage: React.FC = () => {
           totalEvents={eventsData?.total || 0}
         />
 
-        {/* Events Grid */}
-        <EventGrid
-          events={eventsData?.events || []}
-          isLoading={isLoading}
-          onRSVP={handleRSVP}
-          onShare={handleShare}
-          rsvpLoadingEventId={createRSVPMutation.isPending ? createRSVPMutation.variables?.eventId : null}
-          onResetFilters={handleClearFilters}
-        />
+        {/* View Switching: Interactive Map or Grid */}
+        {viewMode === 'map' ? (
+          <div className="mt-4 animate-in fade-in duration-200">
+            <EventMapView
+              events={eventsData?.events || []}
+              selectedCity={city}
+            />
+          </div>
+        ) : (
+          <EventGrid
+            events={eventsData?.events || []}
+            isLoading={isLoading}
+            onRSVP={handleRSVP}
+            onShare={handleShare}
+            rsvpLoadingEventId={createRSVPMutation.isPending ? createRSVPMutation.variables?.eventId : null}
+            onResetFilters={handleClearFilters}
+          />
+        )}
       </div>
 
       {/* Share / Invite Friends Modal */}
