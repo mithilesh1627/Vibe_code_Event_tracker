@@ -9,11 +9,12 @@ export const connectDatabase = async (): Promise<string> => {
     return await connectInMemory();
   }
 
-  // Attempt connection to the configured MongoDB URI with a short timeout
+  // Attempt connection to the configured MongoDB URI with a suitable timeout for cloud Atlas
   try {
-    console.log(`Connecting to MongoDB at: ${config.mongoUri}...`);
+    const sanitizedUri = config.mongoUri.replace(/:([^:@]+)@/, ':****@');
+    console.log(`Connecting to MongoDB at: ${sanitizedUri}...`);
     await mongoose.connect(config.mongoUri, {
-      serverSelectionTimeoutMS: 2500, // Timeout fast if local mongod is not running
+      serverSelectionTimeoutMS: 8000,
     });
     console.log('MongoDB connected successfully via URI.');
     return config.mongoUri;
