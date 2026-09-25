@@ -3,6 +3,19 @@ import { config } from './index.js';
 
 let mongodInstance: any = null;
 
+// Attach connection life-cycle listeners
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err?.message || err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.warn('MongoDB disconnected. Automatic reconnection will be attempted by driver.');
+});
+
+mongoose.connection.on('reconnected', () => {
+  console.log('MongoDB connection re-established successfully.');
+});
+
 export const connectDatabase = async (): Promise<string> => {
   // If explicitly requested to use in-memory database
   if (config.useInMemoryDb === 'true') {
