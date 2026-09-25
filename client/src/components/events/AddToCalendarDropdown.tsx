@@ -39,8 +39,31 @@ export const AddToCalendarDropdown: React.FC<AddToCalendarDropdownProps> = ({
     };
   }, [isOpen]);
 
-  const handleGoogleCalendar = () => {
-    window.open(generateGoogleCalendarUrl(event), '_blank', 'noopener,noreferrer');
+  const handleGoogleCalendar = async () => {
+    try {
+      // Call backend Google Calendar API route
+      const res = await fetch('/api/calendar/google/url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: event.title,
+          description: event.description,
+          venue: event.venue,
+          address: event.address,
+          city: event.city,
+          date: event.date,
+          time: event.time,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.data?.googleCalendarUrl) {
+        window.open(data.data.googleCalendarUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        window.open(generateGoogleCalendarUrl(event), '_blank', 'noopener,noreferrer');
+      }
+    } catch {
+      window.open(generateGoogleCalendarUrl(event), '_blank', 'noopener,noreferrer');
+    }
     setIsOpen(false);
   };
 
