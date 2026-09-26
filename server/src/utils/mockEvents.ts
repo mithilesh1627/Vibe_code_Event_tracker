@@ -282,3 +282,26 @@ export const MOCK_EVENTS: NormalizedEvent[] = [
     longitude: -73.9934,
   }
 ];
+
+const MOCK_OFFSETS: Record<string, number> = {
+  'mock-evt-101': 0, // Today
+  'mock-evt-102': 1,
+  'mock-evt-103': 2,
+  'mock-evt-104': 3,
+  'mock-evt-105': 5,
+  'mock-evt-106': 6,
+  'mock-evt-107': 8,
+  'mock-evt-108': 10,
+  'mock-evt-109': 12,
+  'mock-evt-110': 14,
+  'mock-evt-111': 18,
+  'mock-evt-112': 22,
+};
+
+export const getMockEvents = (): NormalizedEvent[] => {
+  return MOCK_EVENTS.map((e) => ({
+    ...e,
+    date: getDateOffset(MOCK_OFFSETS[e.id] ?? 0),
+  }));
+};
+

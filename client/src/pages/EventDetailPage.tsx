@@ -22,7 +22,7 @@ import { InviteModal } from '../components/invite/InviteModal.js';
 import { inviteService } from '../services/invite.service.js';
 import { AddToCalendarDropdown } from '../components/events/AddToCalendarDropdown.js';
 import { DigitalTicketModal } from '../components/events/DigitalTicketModal.js';
-import { GoogleVenueMap } from '../components/map/GoogleVenueMap.js';
+import { VenueMap } from '../components/map/VenueMap.js';
 
 export const EventDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -229,13 +229,13 @@ export const EventDetailPage: React.FC = () => {
               </div>
             )}
 
-            {/* Interactive Google Maps Venue Location & Directions */}
+            {/* Interactive OpenStreetMap Venue Location & Free Directions */}
             <div className="pt-6 border-t border-slate-100">
               <h3 className="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-rose-500" />
-                Venue Location & Google Maps Navigation
+                <MapPin className="w-4 h-4 text-indigo-600" />
+                Venue Location & Directions
               </h3>
-              <GoogleVenueMap
+              <VenueMap
                 venue={event.venue}
                 address={event.address}
                 city={event.city}

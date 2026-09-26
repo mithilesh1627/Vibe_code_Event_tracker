@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { config } from '../config/index.js';
-import { MOCK_EVENTS, NormalizedEvent } from '../utils/mockEvents.js';
+import { getMockEvents, NormalizedEvent } from '../utils/mockEvents.js';
 
 const TICKETMASTER_BASE_URL = 'https://app.ticketmaster.com/discovery/v2';
 
@@ -69,7 +69,7 @@ export class TicketmasterService {
    * Filter local mock events according to query parameters
    */
   private static filterMockEvents(params: EventSearchParams): EventsResponse {
-    let results = [...MOCK_EVENTS];
+    let results = getMockEvents();
 
     if (params.keyword) {
       const q = params.keyword.toLowerCase().trim();
@@ -189,13 +189,13 @@ export class TicketmasterService {
   public static async getEventById(id: string): Promise<NormalizedEvent | null> {
     // Check mock data first if id matches mock pattern
     if (id.startsWith('mock-')) {
-      const found = MOCK_EVENTS.find((e) => e.id === id);
+      const found = getMockEvents().find((e) => e.id === id);
       return found || null;
     }
 
     const apiKey = config.ticketmasterApiKey;
     if (!apiKey) {
-      const found = MOCK_EVENTS.find((e) => e.id === id);
+      const found = getMockEvents().find((e) => e.id === id);
       return found || null;
     }
 
@@ -209,7 +209,7 @@ export class TicketmasterService {
       return this.normalizeTicketmasterEvent(response.data);
     } catch (error: any) {
       console.warn(`Ticketmaster fetch by ID failed (${error.message}). Searching mock list...`);
-      return MOCK_EVENTS.find((e) => e.id === id) || null;
+      return getMockEvents().find((e) => e.id === id) || null;
     }
   }
 
