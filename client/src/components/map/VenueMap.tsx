@@ -27,20 +27,20 @@ const CITY_COORDINATES: Record<string, [number, number]> = {
 };
 
 const TILE_PROVIDERS = {
-  voyager: {
-    name: 'Clean Color',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-  },
   osm: {
-    name: 'OpenStreetMap',
+    name: 'OpenStreetMap Standard',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
-  positron: {
-    name: 'Light Minimal',
-    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+  hot: {
+    name: 'OSM Humanitarian',
+    url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Humanitarian OpenStreetMap Team',
+  },
+  voyager: {
+    name: 'OSM Voyager',
+    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO',
   },
 };
 
@@ -57,7 +57,7 @@ export const VenueMap: React.FC<VenueMapProps> = ({
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
 
-  const [activeTile, setActiveTile] = useState<keyof typeof TILE_PROVIDERS>('voyager');
+  const [activeTile, setActiveTile] = useState<keyof typeof TILE_PROVIDERS>('osm');
 
   // Determine best coordinates
   let lat = latitude;
@@ -148,7 +148,7 @@ export const VenueMap: React.FC<VenueMapProps> = ({
 
   // Switch tile provider (100% free OpenStreetMap layers)
   const handleTileChange = () => {
-    const keys: (keyof typeof TILE_PROVIDERS)[] = ['voyager', 'osm', 'positron'];
+    const keys: (keyof typeof TILE_PROVIDERS)[] = ['osm', 'hot', 'voyager'];
     const nextIndex = (keys.indexOf(activeTile) + 1) % keys.length;
     const nextKey = keys[nextIndex];
     setActiveTile(nextKey);
@@ -181,8 +181,9 @@ export const VenueMap: React.FC<VenueMapProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h4 className="text-sm font-bold text-slate-900">{venue}</h4>
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-100/70 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200/50">
-                100% Free Map
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                OpenStreetMap
               </span>
             </div>
             <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">{fullAddress}</p>

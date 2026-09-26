@@ -74,11 +74,10 @@ export const EventMapView: React.FC<EventMapViewProps> = ({ events, selectedCity
       zoomControl: false,
     });
 
-    // Clean modern OpenStreetMap tile layer (CartoDB Positron / OSM)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    // Standard OpenStreetMap Tile Layer (100% Free & Open-Source)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
     }).addTo(map);
 
@@ -260,9 +259,15 @@ export const EventMapView: React.FC<EventMapViewProps> = ({ events, selectedCity
         </button>
       </div>
 
+      {/* OpenStreetMap Live Badge */}
+      <div className="absolute top-4 right-4 z-10 bg-white/95 backdrop-blur text-slate-800 text-xs font-semibold px-3 py-1.5 rounded-xl shadow-md border border-slate-200/80 flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        <span>OpenStreetMap Live</span>
+      </div>
+
       {/* Geolocation Notice Banner */}
       {geoError && (
-        <div className="absolute top-4 right-4 z-10 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
+        <div className="absolute top-14 right-4 z-10 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
           <span>{geoError}</span>
           <button onClick={() => setGeoError(null)} className="text-amber-500 hover:text-amber-700">
             <X className="w-3.5 h-3.5" />
